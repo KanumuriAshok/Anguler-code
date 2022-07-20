@@ -1,0 +1,48 @@
+Multiuser endpoint design
+
+/dashboard -> Call this endpoint as soon as user login, it will create necessary file structure
+           -> Request TYPE: POST 
+	   -> Request Format: JSON Example - {"username":"user1"}
+/ -> Call this endpoint for nodeboundary
+  -> Request TYPE - POST (Form) (same as we use for uploading files but fomrat will be text)
+  -> Field name - "username"
+
+/load_data -> Call this for getting cluster id and sum_pon_homes for a particular user
+	   -> Request TYPE: (GET OR POST) JSON
+           -> Request Format: JSON Example - {"username":"user1"}
+/update_db -> Call this for cluster correction for a user
+	   -> Request TYPE - POST (Form)
+	   -> Field name - "username"
+
+/aerial_page -> Call this for cluster grouping (aerial) for a user
+	     -> Request TYPE - POST (Form)
+	     -> Field name - "username"
+
+/ug_page  -> Call this for cluster grouping (underground) for a user
+	  -> Request TYPE - POST (Form)
+	  -> Field name - "username"
+
+/np_page -> Call this for node placement
+	 -> Request TYPE - POST (Form)
+	 -> Field name - "username"
+
+/np_ug_page -> Call this for node placement(underground)
+	    -> Request TYPE - POST (Form)
+	    -> Field name - "username"
+
+/dn_page -> Call this for data networking
+	 -> Request TYPE - POST (Form)
+	 -> Field name - "username"
+
+/export_output -> Call this to download output data for a user
+	       -> Request TYPE - (GET OR POST) (JSON)
+	       -> Request Format: JSON Example - {"username":"user1"}
+
+/crud -> Call this for Database crud operations
+      -> Request TYPE - (GET OR POST) (JSON)
+      -> VERY IMPORTANT - Make sure to prefix table name (layer_name) with username if not already present
+			  For eg. If table name was sample_flask, it changes to  username_sample_flask
+
+
+
+
