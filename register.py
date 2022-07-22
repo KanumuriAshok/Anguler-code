@@ -2,6 +2,7 @@ from flask import Flask, request
 import os
 import json
 import psycopg2
+import jwt
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from schema import create_schema
@@ -13,7 +14,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = 'secret string'
 CORS(app, resource={fr"*": {"origins": "*"}})
 HOME_DIR = os.getcwd()
-
+My_SECRET_STRING = "AccuracySecretKey"
 db = SQLAlchemy(app)
 
 user = "globals"
@@ -48,6 +49,29 @@ def dashboard():
         os.makedirs(fr'{HOME_DIR}/{username}/data_input')
         os.makedirs(fr'{HOME_DIR}/{username}/data output')
     return "OK"
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    if request.method == "POST" and json.loads(request.data)["password"] and json.loads(request.data)["username"]:
+        username = json.loads(request.data)["username"]
+        password = json.loads(request.data)["password"]
+        exist = Users.query.filter_by(username=username).first()
+        if exist and exist.password == password:
+            payload = {'user_id': {"id": exist.id, "username": exist.username}}
+            token = jwt.encode(payload=payload, key=My_SECRET_STRING)
+            return {'success': True,
+                    'message': 'User created and schema is generated',
+                    'token': token,
+                    'isUserLoggedId': 1,
+                    'username': username,
+                    'schema': exist.schemaname}
+        else:
+            return {'success': False,
+                    'message': 'Please check your username and password.'}
+    else:
+        return {'success': False,
+                'message': 'This method accept POST'}
 
 
 @app.route('/register', methods=['POST'])
